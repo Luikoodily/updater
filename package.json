@@ -53,14 +53,6 @@
   "build": {
     "appId": "com.example.autoupdater",
     "productName": "AutoUpdater",
-    "directories": {
-      "output": "dist"
-    },
-    "files": [
-      "dist/**/*",
-      "node_modules/**/*",
-      "package.json"
-    ],
     "publish": {
       "provider": "github",
       "owner": "LuiKoodily",
