@@ -39,7 +39,9 @@ appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
 publish:
-  provider: generic
-  url: https://github.com/Luikoodily/updater
+  provider: github
+  owner: Luikoodily
+  repo: updater
+  releaseType: release
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/
