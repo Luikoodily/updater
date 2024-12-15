@@ -4,7 +4,7 @@
   "description": "An Electron application with React and TypeScript",
   "main": "./out/main/index.js",
   "author": "autoupdater.com",
-  "homepage": "https://autoupdater.app",
+  "homepage": "https://github.com/Luikoodily/updater",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
