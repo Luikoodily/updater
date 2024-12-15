@@ -51,10 +51,29 @@
     "vite": "^5.0.12"
   },
   "build": {
-    "provider": "github",
-    "owner": "LuiKoodily",
-    "repo": "https://github.com/Luikoodily/updater",
-    "private": false,
-    "releaseType": "release"
+    "appId": "com.example.autoupdater",
+    "productName": "AutoUpdater",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "publish": {
+      "provider": "github",
+      "owner": "LuiKoodily",
+      "repo": "updater"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
   }
 }

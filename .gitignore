@@ -3,3 +3,11 @@ dist
 out
 .DS_Store
 *.log*
+
+notes.*
+notes/
+
+
+.env
+.env.production
+*.db
