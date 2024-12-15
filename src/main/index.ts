@@ -3,6 +3,12 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { autoUpdater } from 'electron-updater'
+import log from 'electron-log'
+
+// Configure logging
+log.transports.file.level = 'debug'
+autoUpdater.logger = log
+log.info('App starting...')
 
 // Configure autoUpdater
 autoUpdater.autoDownload = false

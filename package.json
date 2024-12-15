@@ -1,6 +1,6 @@
 {
   "name": "autouodater",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An Electron application with React and TypeScript",
   "main": "./out/main/index.js",
   "author": "example.com",
@@ -19,7 +19,11 @@
     "build:win": "npm run build && electron-builder --win",
     "build:mac": "electron-vite build && electron-builder --mac",
     "build:linux": "electron-vite build && electron-builder --linux",
-    "version": "node -p \"require('./package.json').version\""
+    "release:win": "npm run build && electron-builder --win --publish always",
+    "version": "node -p \"require('./package.json').version\"",
+    "bump:patch": "npm version patch --no-git-tag-version",
+    "bump:minor": "npm version minor --no-git-tag-version",
+    "bump:major": "npm version major --no-git-tag-version"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.0",
