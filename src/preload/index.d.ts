@@ -14,6 +14,7 @@ declare global {
       onDownloadProgress: (callback: (progress: any) => void) => void
       onUpdateDownloaded: (callback: () => void) => void
       removeAllListeners: () => void
+      invoke: (channel: string, ...args: any[]) => Promise<any>
     }
   }
 }

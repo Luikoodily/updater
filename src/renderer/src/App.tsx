@@ -1,10 +1,26 @@
-// import Versions from './components/Versions'
+import { useEffect, useState } from 'react'
+import Versions from './components/Versions'
 import UpdaterComponent from './components/UpdaterComponent'
 import electronLogo from './assets/electron.svg'
+import { ipcEndpoints } from '../src/constants/ipc'
 
 function App(): JSX.Element {
   const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
-  const appVersion = window.electron.process.versions.app
+  const [appVersion, setAppVersion] = useState<string>('loading...')
+
+  useEffect(() => {
+    const getVersion = async () => {
+      try {
+        const version = await window.api.invoke(ipcEndpoints.GET_APP_VERSION)
+        setAppVersion(version)
+      } catch (error) {
+        console.error('Failed to get app version:', error)
+        setAppVersion('unknown')
+      }
+    }
+
+    getVersion()
+  }, [])
 
   return (
     <>
@@ -33,7 +49,7 @@ function App(): JSX.Element {
           </a>
         </div>
       </div>
-      {/* <Versions></Versions> */}
+      <Versions></Versions>
     </>
   )
 }

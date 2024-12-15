@@ -22,6 +22,9 @@ const api = {
     ipcRenderer.removeAllListeners('update-error')
     ipcRenderer.removeAllListeners('download-progress')
     ipcRenderer.removeAllListeners('update-downloaded')
+  },
+  invoke: (channel: string, ...args: any[]) => {
+    return ipcRenderer.invoke(channel, ...args)
   }
 }
 

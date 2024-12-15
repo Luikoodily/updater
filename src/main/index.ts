@@ -93,6 +93,10 @@ app.whenReady().then(() => {
     autoUpdater.quitAndInstall()
   })
 
+  ipcMain.handle('get-app-version', () => {
+    return app.getVersion()
+  })
+
   createWindow()
 
   app.on('activate', function () {
