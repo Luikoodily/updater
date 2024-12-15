@@ -1,10 +1,10 @@
 {
-  "name": "autouodater",
+  "name": "autoupdater",
   "version": "1.1.0",
   "description": "An Electron application with React and TypeScript",
   "main": "./out/main/index.js",
-  "author": "example.com",
-  "homepage": "https://electron-vite.org",
+  "author": "autoupdater.com",
+  "homepage": "https://autoupdater.app",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
@@ -49,23 +49,5 @@
     "react-dom": "^18.2.0",
     "typescript": "^5.3.3",
     "vite": "^5.0.12"
-  },
-  "build": {
-    "appId": "com.example.autoupdater",
-    "productName": "AutoUpdater",
-    "publish": {
-      "provider": "github",
-      "owner": "LuiKoodily",
-      "repo": "updater"
-    },
-    "win": {
-      "target": "nsis"
-    },
-    "mac": {
-      "target": "dmg"
-    },
-    "linux": {
-      "target": "AppImage"
-    }
   }
 }
