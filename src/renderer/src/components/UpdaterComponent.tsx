@@ -23,8 +23,8 @@ const UpdaterComponent: React.FC = () => {
 
     window.api.onUpdateError((error) => {
       setUpdateStatus(`Error: ${error.message}`)
-      console.log('Update Error:', error.message) // Logs the error message
-      console.log('Full Error Object:', error) // Logs the entire error object for detailed inspection
+      console.log('Update Erro-----------:', error.message) // Logs the error message
+      console.log('Full Error Object?????????:', error) // Logs the entire error object for detailed inspection
     })
 
     window.api.onDownloadProgress((progress) => {
