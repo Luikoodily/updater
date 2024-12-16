@@ -22,6 +22,7 @@ function determineUpdateChannel(): 'stable' | 'beta' {
   const isBetaVersion =
     appVersion.includes('-beta') ||
     appVersion.includes('beta') ||
+    appVersion.includes('-alpha') ||
     appVersion.includes('alpha') ||
     appVersion.includes('rc')
 
