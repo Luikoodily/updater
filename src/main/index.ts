@@ -1,20 +1,46 @@
-import 'dotenv/config' // Automatically loads .env variables
-
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
+import * as dotenv from 'dotenv'
+
+dotenv.config()
 
 // Configure logging
 log.transports.file.level = 'debug'
 autoUpdater.logger = log
 log.info('App starting...')
 
-// Configure autoUpdater
-autoUpdater.autoDownload = false
-autoUpdater.autoInstallOnAppQuit = true
+function determineUpdateChannel(): 'stable' | 'beta' {
+  // Check environment variable first
+  if (process.env.UPDATE_CHANNEL === 'beta') return 'beta'
+
+  // Check app version for beta indicators
+  const appVersion = app.getVersion()
+  const isBetaVersion =
+    appVersion.includes('-beta') ||
+    appVersion.includes('beta') ||
+    appVersion.includes('alpha') ||
+    appVersion.includes('rc')
+
+  return isBetaVersion ? 'beta' : 'stable'
+}
+
+function configureAutoUpdater() {
+  const updateChannel = determineUpdateChannel()
+
+  // Configure auto-updater settings
+  autoUpdater.autoDownload = false
+  autoUpdater.autoInstallOnAppQuit = true
+
+  // Set allowPrerelease based on update channel
+  autoUpdater.allowPrerelease = updateChannel === 'beta'
+
+  // Optional: Log the current update channel
+  console.log(`Current update channel: ${updateChannel}`)
+}
 
 function createWindow(): void {
   // Create the browser window.
@@ -44,7 +70,12 @@ function createWindow(): void {
   })
 
   autoUpdater.on('update-available', (info) => {
-    mainWindow.webContents.send('update-available', info)
+    // Add a flag to indicate if this is a pre-release
+    const enhancedInfo = {
+      ...info,
+      isPrerelease: autoUpdater.allowPrerelease
+    }
+    mainWindow.webContents.send('update-available', enhancedInfo)
   })
 
   autoUpdater.on('update-not-available', () => {
@@ -78,12 +109,17 @@ function createWindow(): void {
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.electron')
 
+  // Configure auto updater before creating window
+  configureAutoUpdater()
+
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
 
   // IPC handlers for auto-updater
   ipcMain.on('check-for-update', () => {
+    // Reconfigure updater each time to ensure current settings
+    configureAutoUpdater()
     autoUpdater.checkForUpdates()
   })
 

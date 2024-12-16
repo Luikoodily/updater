@@ -13,6 +13,7 @@ declare global {
       onUpdateError: (callback: (error: Error) => void) => void
       onDownloadProgress: (callback: (progress: any) => void) => void
       onUpdateDownloaded: (callback: () => void) => void
+      onUpdateChannel: (callback: (channel: string) => void) => void
       removeAllListeners: () => void
       invoke: (channel: string, ...args: any[]) => Promise<any>
     }

@@ -1,76 +1,130 @@
 import React, { useEffect, useState } from 'react'
 
 const UpdaterComponent: React.FC = () => {
-  const [updateStatus, setUpdateStatus] = useState<string>('')
+  const [updateStatus, setUpdateStatus] = useState<string>('Initializing update system...')
   const [downloadProgress, setDownloadProgress] = useState<number>(0)
   const [updateAvailable, setUpdateAvailable] = useState<boolean>(false)
   const [updateDownloaded, setUpdateDownloaded] = useState<boolean>(false)
 
   useEffect(() => {
-    // Setup update listeners
-    window.api.onUpdateMessage((message) => {
-      setUpdateStatus(message)
-    })
+    // Ensure we have access to the API
+    if (typeof window === 'undefined') {
+      setUpdateStatus('Environment not supported')
+      return
+    }
 
-    window.api.onUpdateAvailable(() => {
-      setUpdateAvailable(true)
-      setUpdateStatus('Update available!')
-    })
+    // Centralized error-safe method for attaching listeners
+    const setupListener = () => {
+      if (!window.api) {
+        console.error('Update API is not available')
+        setUpdateStatus('Update system not initialized')
+        return
+      }
 
-    window.api.onUpdateNotAvailable(() => {
-      setUpdateStatus('No updates available')
-    })
+      try {
+        window.api.onUpdateMessage?.((message: string) => {
+          console.log('Update Message:', message)
+          setUpdateStatus(message)
+        })
 
-    window.api.onUpdateError((error) => {
-      setUpdateStatus(`Error: ${error.message}`)
-      console.log('Update Erro-----------:', error.message) // Logs the error message
-      console.log('Full Error Object?????????:', error) // Logs the entire error object for detailed inspection
-    })
+        window.api.onUpdateAvailable?.((info: any) => {
+          console.log('Update Available:', info)
+          setUpdateAvailable(true)
+          setUpdateStatus(`Update available: ${info?.version || 'Unknown version'}`)
+        })
 
-    window.api.onDownloadProgress((progress) => {
-      setDownloadProgress(progress.percent || 0)
-      setUpdateStatus(`Downloading: ${Math.round(progress.percent)}%`)
-    })
+        window.api.onUpdateNotAvailable?.(() => {
+          console.log('No updates available')
+          setUpdateStatus('No updates available')
+          setUpdateAvailable(false)
+        })
 
-    window.api.onUpdateDownloaded(() => {
-      setUpdateDownloaded(true)
-      setUpdateStatus('Update downloaded! Ready to install.')
-    })
+        window.api.onUpdateError?.((error: Error) => {
+          console.error('Update Error:', error)
+          setUpdateStatus(`Update error: ${error.message}`)
+        })
 
-    // Check for updates initially
-    window.api.checkForUpdates()
+        window.api.onDownloadProgress?.((progress: { percent?: number }) => {
+          const percent = progress.percent || 0
+          console.log('Download Progress:', percent)
+          setDownloadProgress(percent)
+          setUpdateStatus(`Downloading: ${percent.toFixed(0)}%`)
+        })
 
-    // Cleanup listeners
+        window.api.onUpdateDownloaded?.(() => {
+          console.log('Update Downloaded')
+          setUpdateDownloaded(true)
+          setUpdateStatus('Update downloaded. Ready to install.')
+        })
+
+        window.api.checkForUpdates?.()
+      } catch (error) {
+        console.error('Failed to setup update listeners:', error)
+        setUpdateStatus('Failed to initialize update system')
+      }
+    }
+
+    setupListener()
+
     return () => {
-      window.api.removeAllListeners()
+      try {
+        window.api?.removeAllListeners?.()
+      } catch (error) {
+        console.error('Error during cleanup:', error)
+      }
     }
   }, [])
 
   const handleDownload = () => {
-    window.api.downloadUpdate()
+    try {
+      window.api?.downloadUpdate?.()
+      setUpdateStatus('Starting download...')
+    } catch (error) {
+      console.error('Download failed:', error)
+      setUpdateStatus('Update download failed')
+    }
   }
 
   const handleInstall = () => {
-    window.api.installUpdate()
+    try {
+      window.api?.installUpdate?.()
+      setUpdateStatus('Installing update...')
+    } catch (error) {
+      console.error('Install failed:', error)
+      setUpdateStatus('Update installation failed')
+    }
   }
 
   return (
     <div className="updater-container">
-      <div className="update-status">{updateStatus}</div>
-      {downloadProgress > 0 && (
-        <div className="progress-bar">
-          <div className="progress" style={{ width: `${downloadProgress}%` }} />
+      <h2>Updater Component</h2>
+      <div className="update-status">
+        <p>{updateStatus}</p>
+      </div>
+
+      {downloadProgress > 0 && !updateDownloaded && (
+        <div className="download-progress">
+          <progress value={downloadProgress} max={100}></progress>
+          <span>{downloadProgress.toFixed(0)}%</span>
         </div>
       )}
+
       {updateAvailable && !updateDownloaded && (
-        <button onClick={handleDownload} className="update-button">
+        <button onClick={handleDownload} className="download-button">
           Download Update
         </button>
       )}
+
       {updateDownloaded && (
-        <button onClick={handleInstall} className="update-button">
-          Install and Restart
+        <button onClick={handleInstall} className="install-button">
+          Install Update
         </button>
+      )}
+
+      {!updateAvailable && (
+        <div className="no-update">
+          <p>No updates available at the moment.</p>
+        </div>
       )}
     </div>
   )

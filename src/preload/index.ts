@@ -15,6 +15,8 @@ const api = {
   onDownloadProgress: (callback) =>
     ipcRenderer.on('download-progress', (_, progress) => callback(progress)),
   onUpdateDownloaded: (callback) => ipcRenderer.on('update-downloaded', () => callback()),
+  onUpdateChannel: (callback) =>
+    ipcRenderer.on('update-channel', (_, channel) => callback(channel)),
   removeAllListeners: () => {
     ipcRenderer.removeAllListeners('update-message')
     ipcRenderer.removeAllListeners('update-available')
