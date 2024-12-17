@@ -1,6 +1,6 @@
 {
   "name": "autoupdater",
-  "version": "6.0.2-alpha",
+  "version": "6.0.3-beta",
   "description": "An Electron application with React and TypeScript",
   "main": "./out/main/index.js",
   "author": "autoupdater.com",
